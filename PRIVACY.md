@@ -101,4 +101,4 @@ for your consent before doing so.
 ## Contact
 
 Questions about this policy can be raised as an issue at
-[github.com/dem1995/rules-relay/issues](https://github.com/dem1995/rules-relay/issues).
+[github.com/dem1995/claude-rules-relay/issues](https://github.com/dem1995/claude-rules-relay/issues).
