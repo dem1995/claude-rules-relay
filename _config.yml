@@ -1,0 +1,11 @@
+# GitHub Pages: serves README.md as the homepage and PRIVACY.md as /PRIVACY.html.
+title: Rules Relay
+description: Sync Claude Code rule files between your computers through your own Google Drive.
+exclude:
+  - src
+  - out
+  - media/rules.svg
+  - package.json
+  - package-lock.json
+  - tsconfig.json
+  - "*.vsix"
