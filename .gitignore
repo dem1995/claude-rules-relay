@@ -1,0 +1,5 @@
+node_modules/
+out/
+*.vsix
+oauth-client.json
+client_secret_*.json

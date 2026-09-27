@@ -1,0 +1,293 @@
+{
+  "name": "rules-relay",
+  "displayName": "Rules Relay: Claude Code rules via Google Drive",
+  "description": "Sync a folder of Claude Code rule files between your computers through a folder in your own Google Drive.",
+  "version": "0.4.0",
+  "publisher": "dem1995",
+  "license": "MIT",
+  "homepage": "https://dem1995.github.io/claude-rules-relay/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dem1995/claude-rules-relay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dem1995/claude-rules-relay/issues"
+  },
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#1f2a44",
+    "theme": "dark"
+  },
+  "keywords": [
+    "claude",
+    "claude code",
+    "rules",
+    "sync",
+    "google drive",
+    "settings sync"
+  ],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "rulesRelay",
+          "title": "Rules Relay",
+          "icon": "media/rules.svg"
+        }
+      ]
+    },
+    "views": {
+      "rulesRelay": [
+        {
+          "id": "rulesRelay.files",
+          "name": "Synced Rules",
+          "icon": "media/rules.svg"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "rulesRelay.files",
+        "contents": "Keep your Claude Code rules in step across machines through a folder in your Google Drive.\n[Sign In to Google Drive](command:rulesRelay.signIn)\nSign-in opens in your browser.",
+        "when": "!rulesRelay.signedIn && rulesRelay.hasClient"
+      },
+      {
+        "view": "rulesRelay.files",
+        "contents": "Keep your Claude Code rules in step across machines through a folder in your Google Drive.\n[Sign In to Google Drive](command:rulesRelay.signIn)\nThis build has no Google OAuth client bundled, so sign-in will ask for your client ID and secret first. [Open the Setup Guide](command:rulesRelay.openReadme)",
+        "when": "!rulesRelay.signedIn && !rulesRelay.hasClient"
+      },
+      {
+        "view": "rulesRelay.files",
+        "contents": "No rules yet. Add .md files to the synced folder and they will show up here.\n[Open Synced Folder](command:rulesRelay.openFolder)\n[Sync Now](command:rulesRelay.sync)",
+        "when": "rulesRelay.signedIn && rulesRelay.empty"
+      }
+    ],
+    "commands": [
+      {
+        "command": "rulesRelay.signIn",
+        "title": "Sign In to Google Drive",
+        "category": "Rules Relay",
+        "icon": "$(sign-in)"
+      },
+      {
+        "command": "rulesRelay.signOut",
+        "title": "Sign Out of Google Drive",
+        "category": "Rules Relay",
+        "icon": "$(sign-out)"
+      },
+      {
+        "command": "rulesRelay.pull",
+        "title": "Pull",
+        "category": "Rules Relay",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "rulesRelay.push",
+        "title": "Push",
+        "category": "Rules Relay",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "rulesRelay.sync",
+        "title": "Sync (Push and Pull)",
+        "category": "Rules Relay",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "rulesRelay.refresh",
+        "title": "Refresh Status",
+        "category": "Rules Relay",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "rulesRelay.openFolder",
+        "title": "Open Synced Folder",
+        "category": "Rules Relay",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "rulesRelay.openDrive",
+        "title": "Open Folder in Google Drive",
+        "category": "Rules Relay",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "rulesRelay.showLog",
+        "title": "Show Log",
+        "category": "Rules Relay",
+        "icon": "$(output)"
+      },
+      {
+        "command": "rulesRelay.compareConflict",
+        "title": "Compare with Current",
+        "category": "Rules Relay",
+        "icon": "$(git-compare)"
+      },
+      {
+        "command": "rulesRelay.resolveConflict",
+        "title": "Resolve (Delete Copy)",
+        "category": "Rules Relay",
+        "icon": "$(check)"
+      },
+      {
+        "command": "rulesRelay.revealFile",
+        "title": "Reveal in File Explorer",
+        "category": "Rules Relay",
+        "icon": "$(folder)"
+      },
+      {
+        "command": "rulesRelay.openReadme",
+        "title": "Open Setup Guide",
+        "category": "Rules Relay",
+        "icon": "$(book)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "rulesRelay.sync",
+          "when": "view == rulesRelay.files && rulesRelay.signedIn",
+          "group": "navigation@1"
+        },
+        {
+          "command": "rulesRelay.pull",
+          "when": "view == rulesRelay.files && rulesRelay.signedIn",
+          "group": "navigation@2"
+        },
+        {
+          "command": "rulesRelay.push",
+          "when": "view == rulesRelay.files && rulesRelay.signedIn",
+          "group": "navigation@3"
+        },
+        {
+          "command": "rulesRelay.refresh",
+          "when": "view == rulesRelay.files && rulesRelay.signedIn",
+          "group": "navigation@4"
+        },
+        {
+          "command": "rulesRelay.openFolder",
+          "when": "view == rulesRelay.files",
+          "group": "1_folders@1"
+        },
+        {
+          "command": "rulesRelay.openDrive",
+          "when": "view == rulesRelay.files && rulesRelay.signedIn",
+          "group": "1_folders@2"
+        },
+        {
+          "command": "rulesRelay.openReadme",
+          "when": "view == rulesRelay.files",
+          "group": "2_log@2"
+        },
+        {
+          "command": "rulesRelay.showLog",
+          "when": "view == rulesRelay.files",
+          "group": "2_log"
+        },
+        {
+          "command": "rulesRelay.signIn",
+          "when": "view == rulesRelay.files && !rulesRelay.signedIn",
+          "group": "3_account"
+        },
+        {
+          "command": "rulesRelay.signOut",
+          "when": "view == rulesRelay.files && rulesRelay.signedIn",
+          "group": "3_account"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "rulesRelay.compareConflict",
+          "when": "view == rulesRelay.files && viewItem == conflictCopy",
+          "group": "inline@1"
+        },
+        {
+          "command": "rulesRelay.resolveConflict",
+          "when": "view == rulesRelay.files && viewItem == conflictCopy",
+          "group": "inline@2"
+        },
+        {
+          "command": "rulesRelay.compareConflict",
+          "when": "view == rulesRelay.files && viewItem == conflictCopy",
+          "group": "1_conflict@1"
+        },
+        {
+          "command": "rulesRelay.resolveConflict",
+          "when": "view == rulesRelay.files && viewItem == conflictCopy",
+          "group": "1_conflict@2"
+        },
+        {
+          "command": "rulesRelay.revealFile",
+          "when": "view == rulesRelay.files && viewItem == localFile",
+          "group": "1_file"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "rulesRelay.compareConflict",
+          "when": "false"
+        },
+        {
+          "command": "rulesRelay.resolveConflict",
+          "when": "false"
+        },
+        {
+          "command": "rulesRelay.revealFile",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Rules Relay",
+      "properties": {
+        "rulesRelay.localFolder": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Local folder to sync. When empty, this is `rules/vs_code_synced` inside the Claude config directory (`CLAUDE_CONFIG_DIR` if set, otherwise `~/.claude`)."
+        },
+        "rulesRelay.driveFolderName": {
+          "type": "string",
+          "default": "vs_code_synced",
+          "description": "Name of the folder at the top of your Google Drive that holds the synced rules."
+        },
+        "rulesRelay.oauthClientId": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Client ID of your Google OAuth client (type *Desktop app*). Every machine must use the same client, because the extension can only see Drive files created through it. See the README for setup."
+        },
+        "rulesRelay.syncOnStartup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Run a sync when VS Code starts, if you are signed in. Only conflicts and errors are reported."
+        },
+        "rulesRelay.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the sync status in the status bar. Clicking it opens the Synced Rules view."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "test": "npm run compile && node --test \"out/test/**/*.test.js\"",
+    "package": "npm run compile && vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.2.0",
+    "typescript": "^5.5.0"
+  }
+}
