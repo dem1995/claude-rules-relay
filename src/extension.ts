@@ -190,9 +190,19 @@ class Controller {
         return { id, secret };
     }
 
+    /**
+     * Revoke the sign-in and forget everything the extension stored on this machine. VS Code keeps
+     * an uninstalled extension's state, so this is the one place a user can clear it. The sync
+     * bookkeeping goes too: the next sync after a new sign-in starts from no history, which is safe,
+     * because files that differ then become conflict copies rather than one side overwriting the other.
+     */
     async signOut(): Promise<void> {
         const account = await this.auth.account();
         await this.auth.signOut();
+        for (const key of this.context.globalState.keys()) {
+            await this.context.globalState.update(key, undefined);
+        }
+        this.state.lastSync = undefined;
         this.remote = undefined;
         await this.refresh(false);
         void vscode.window.showInformationMessage(`Signed out of Google Drive${account ? ` (${account})` : ''}.`);

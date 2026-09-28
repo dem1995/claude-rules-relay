@@ -67,7 +67,9 @@ for your email address, which it shows so you know which account is signed in. I
 anything else in your Drive.
 
 Rules Relay has no servers. Your sign-in stays in your operating system's credential store, and
-your files travel only between your computer and your own Google Drive. The
+your files travel only between your computer and your own Google Drive. **Sign Out** revokes the
+sign-in and deletes everything Rules Relay stored on the computer. Do that before uninstalling if
+you want nothing left behind, because VS Code keeps an uninstalled extension's stored state. The
 [privacy policy](PRIVACY.md) has the details.
 
 Because Google limits Rules Relay to the files it created, a file you upload into the Drive folder

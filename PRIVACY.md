@@ -1,6 +1,6 @@
 # Rules Relay Privacy Policy
 
-**Effective date:** September 27, 2026
+**Effective date:** September 28, 2026
 
 Rules Relay is a Visual Studio Code extension that keeps a folder of Claude Code rule files in sync
 between your computers, using a folder in your own Google Drive. This policy explains what
@@ -82,11 +82,14 @@ In particular, Rules Relay:
 ## Removing your information
 
 - **Sign out** in Rules Relay (the "Sign Out of Google Drive" command). This revokes the extension's
-  access with Google and deletes your sign-in and email address from your computer.
+  access with Google and deletes everything Rules Relay stored on your computer: your sign-in, your
+  email address, and the sync bookkeeping.
 - **Revoke access from your Google account** at any time at
   [myaccount.google.com/connections](https://myaccount.google.com/connections). This works even if
   the extension is no longer installed.
-- **Uninstall the extension** from VS Code to remove its sync bookkeeping.
+- **Sign out before uninstalling** if you want nothing left behind. VS Code keeps an uninstalled
+  extension's stored state rather than deleting it, so uninstalling on its own does not remove the
+  sign-in or the sync bookkeeping.
 - **Delete the synced files** yourself if you no longer want them. Rules Relay never deletes the
   Drive sync folder, so the files in it stay in your Drive until you remove them. Files that Rules
   Relay removes during a sync go to your Drive trash or your computer's trash, where you can
