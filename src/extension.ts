@@ -86,7 +86,8 @@ class Controller {
                 if (event.affectsConfiguration(SECTION)) {
                     this.watchLocalFolder();
                     this.render();
-                    void this.refresh(true);
+                    // A client ID typed into settings changes which welcome text applies.
+                    void this.updateClientContext().then(() => this.refresh(true));
                 }
             }),
         );
@@ -94,15 +95,22 @@ class Controller {
 
     async start(): Promise<void> {
         this.watchLocalFolder();
-        // Only ever set to true once the check has run, so the welcome text does not mention a
-        // missing client in the moment before the bundled one has been read.
-        await vscode.commands.executeCommand('setContext', `${SECTION}.noClient`, (await this.client()) === undefined);
+        await this.updateClientContext();
         this.state.signedIn = await this.auth.isSignedIn();
         this.state.account = await this.auth.account();
         this.render();
         if (this.state.signedIn && this.config().get<boolean>('syncOnStartup', false)) {
             await this.run('sync', true);
         }
+    }
+
+    /**
+     * Tell the welcome view whether a sign-in would have to ask for a client. The key is only ever
+     * set to true after the check has run, so the welcome text does not mention a missing client in
+     * the moment before the bundled one has been read.
+     */
+    private async updateClientContext(): Promise<void> {
+        await vscode.commands.executeCommand('setContext', `${SECTION}.noClient`, (await this.client()) === undefined);
     }
 
     // --- Commands ---------------------------------------------------------------------------
@@ -305,9 +313,11 @@ class Controller {
         this.loading = true;
         const root = localFolder(this.config());
         this.state.root = root;
-        this.state.signedIn = await this.auth.isSignedIn();
-        this.state.account = this.state.signedIn ? await this.auth.account() : undefined;
+        // Everything that can fail sits inside the try, so `loading` is always cleared. A read of
+        // secret storage that throws (a locked keychain, say) must not leave the view stuck.
         try {
+            this.state.signedIn = await this.auth.isSignedIn();
+            this.state.account = this.state.signedIn ? await this.auth.account() : undefined;
             if (!this.state.signedIn) {
                 this.remote = undefined;
                 Object.assign(this.state, { loaded: false, files: [], copies: [], error: undefined, driveFolderId: undefined });
