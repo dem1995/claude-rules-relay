@@ -36,6 +36,19 @@
   "activationEvents": [
     "onStartupFinished"
   ],
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true,
+      "description": "Rules Relay only touches its own folder in your home directory and never reads the workspace."
+    },
+    "virtualWorkspaces": {
+      "supported": true
+    }
+  },
   "contributes": {
     "viewsContainers": {
       "activitybar": [
@@ -59,12 +72,12 @@
       {
         "view": "rulesRelay.files",
         "contents": "Keep your Claude Code rules in step across machines through a folder in your Google Drive.\n[Sign In to Google Drive](command:rulesRelay.signIn)\nSign-in opens in your browser.",
-        "when": "!rulesRelay.signedIn && rulesRelay.hasClient"
+        "when": "!rulesRelay.signedIn && !rulesRelay.noClient"
       },
       {
         "view": "rulesRelay.files",
         "contents": "Keep your Claude Code rules in step across machines through a folder in your Google Drive.\n[Sign In to Google Drive](command:rulesRelay.signIn)\nThis build has no Google OAuth client bundled, so sign-in will ask for your client ID and secret first. [Open the Setup Guide](command:rulesRelay.openReadme)",
-        "when": "!rulesRelay.signedIn && !rulesRelay.hasClient"
+        "when": "!rulesRelay.signedIn && rulesRelay.noClient"
       },
       {
         "view": "rulesRelay.files",

@@ -179,7 +179,14 @@ async function postToken(form: Record<string, string>): Promise<TokenResponse> {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(form),
     });
-    return (await response.json()) as TokenResponse;
+    // Google answers a bad grant with a 400 and a JSON error, so the body is parsed regardless of
+    // status, and only a body that is not JSON at all is reported by status.
+    const text = await response.text();
+    try {
+        return JSON.parse(text) as TokenResponse;
+    } catch {
+        throw new Error(`Google's sign-in service returned ${response.status}${text ? `: ${text.slice(0, 200)}` : ''}`);
+    }
 }
 
 /**

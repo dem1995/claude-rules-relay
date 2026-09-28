@@ -66,6 +66,9 @@ class Controller {
             () => this.state,
             () => {
                 if (!this.loading) {
+                    // Claimed now rather than when the queued load starts, so a second render
+                    // in the meantime does not queue a second Drive listing.
+                    this.loading = true;
                     void this.refresh(true);
                 }
             },
@@ -91,7 +94,9 @@ class Controller {
 
     async start(): Promise<void> {
         this.watchLocalFolder();
-        await vscode.commands.executeCommand('setContext', `${SECTION}.hasClient`, (await this.client()) !== undefined);
+        // Only ever set to true once the check has run, so the welcome text does not mention a
+        // missing client in the moment before the bundled one has been read.
+        await vscode.commands.executeCommand('setContext', `${SECTION}.noClient`, (await this.client()) === undefined);
         this.state.signedIn = await this.auth.isSignedIn();
         this.state.account = await this.auth.account();
         this.render();
@@ -370,6 +375,9 @@ class Controller {
         } else if (state.running) {
             item.text = '$(sync~spin) Rules';
             item.tooltip = 'Rules Relay: syncing';
+        } else if (!state.loaded) {
+            item.text = '$(cloud) Rules';
+            item.tooltip = 'Rules Relay: not checked yet. Click to check Google Drive.';
         } else if (state.error || conflicts > 0) {
             item.text = '$(warning) Rules';
             item.tooltip = state.error ? `Rules Relay: ${state.error}` : `Rules Relay: ${conflicts} to resolve`;
